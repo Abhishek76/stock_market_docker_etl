@@ -1,0 +1,63 @@
+version: "3.0"
+services:
+  httpserver:
+    build:
+      context: .
+      dockerfile: ./webserver/Dockerfile
+
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./webserver/site :/site
+
+  notebook:
+    build:
+
+      context: .
+      dockerfile: ./jupyter/Dockerfile
+
+    depends_on:
+      - httpserver
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - ./src:/home/jovyan/work
+      - ./jupyter/config/jupyter-config.jsonup:/home/jovyan/.jupyter/jupyter_notebook_config.json
+      - ./jupyter/config:/home/jovyan/.jupyter/config
+
+  main:
+    
+    build:
+
+   
+      context: .
+      dockerfile: ./main/Dockerfile
+
+    volumes:
+       - ./src:/usr/src/
+
+
+    image : main
+    container_name: main
+    command: python /usr/src/main.py
+
+
+  dash:
+    
+    build: 
+      context: .
+      dockerfile: ./dash/Dockerfile
+
+    volumes:
+       - ./dash/app:/app
+       - ./src/output:/app/input
+
+    ports:
+      - "127.0.0.1:8050:8050"
+    image : dash
+    container_name: dash
+    command: python /app/app.py
+
+
+
+

@@ -1,0 +1,7 @@
+flask
+ipywidgets
+pandas
+datetime
+numpy
+scipy
+plotly
